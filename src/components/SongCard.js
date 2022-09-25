@@ -6,7 +6,8 @@ export default class SongCard extends React.Component {
 
         this.state = {
             isDragging: false,
-            draggedTo: false
+            draggedTo: false,
+            isHover: false, 
         }
     }
     handleDragStart = (event) => {
@@ -53,6 +54,25 @@ export default class SongCard extends React.Component {
         // ASK THE MODEL TO MOVE THE DATA
         this.props.moveCallback(sourceId, targetId);
     }
+    handleMouseEnter = (event) => {
+        event.preventDefault();
+        this.setState(prevState => ({
+            ...prevState,
+            isHover: true 
+        }));
+    }
+    handleMouseLeave = (event) => {
+        event.preventDefault();
+        this.setState(prevState => ({
+            ...prevState,
+            isHover: false
+        }));
+    }
+    handleDeleteSong = (event) => {
+        event.stopPropagation();
+        //console.log(this.props.deleteSongCallback)
+        this.props.deleteSongCallback(this.getItemNum() - 1);
+    }
 
     getItemNum = () => {
         return this.props.id.substring("playlist-song-".length);
@@ -66,6 +86,10 @@ export default class SongCard extends React.Component {
         if (this.state.draggedTo) {
             itemClass = "playlister-song-dragged-to";
         }
+        if (this.state.isHover) {
+            itemClass += " unselected-list-card";
+        }
+        let link = "https://www.youtube.com/watch?v=" + song.youTubeId
         return (
             <div
                 id={'song-' + num}
@@ -75,9 +99,18 @@ export default class SongCard extends React.Component {
                 onDragEnter={this.handleDragEnter}
                 onDragLeave={this.handleDragLeave}
                 onDrop={this.handleDrop}
+                onMouseEnter={this.handleMouseEnter}
+                onMouseLeave={this.handleMouseLeave}
                 draggable="true"
             >
-                {song.title} by {song.artist}
+                {num}. <a href = {link}>{song.title} by {song.artist}</a>
+                
+                <input
+                        type="button"
+                        id={"delete-song-" + num}
+                        className="playlister-button"
+                        onClick={this.handleDeleteSong}
+                        value={"\u2715"} />
             </div>
         )
     }

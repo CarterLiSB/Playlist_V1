@@ -18,6 +18,7 @@ import PlaylistCards from './components/PlaylistCards.js';
 import SidebarHeading from './components/SidebarHeading.js';
 import SidebarList from './components/SidebarList.js';
 import Statusbar from './components/Statusbar.js';
+import DeleteSongModal from './components/DeleteSongModal';
 
 class App extends React.Component {
     constructor(props) {
@@ -36,7 +37,9 @@ class App extends React.Component {
         this.state = {
             listKeyPairMarkedForDeletion : null,
             currentList : null,
-            sessionData : loadedSessionData
+            sessionData : loadedSessionData,
+            deleteIndex: null,
+
         }
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
@@ -263,6 +266,12 @@ class App extends React.Component {
             this.showDeleteListModal();
         });
     }
+    setDeleteSongIndex = (index) => {
+        this.setState(prevState => ({
+            ...prevState,
+            deleteIndex: index
+        }))
+    }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
     showDeleteListModal() {
@@ -303,13 +312,20 @@ class App extends React.Component {
                 />
                 <PlaylistCards
                     currentList={this.state.currentList}
-                    moveSongCallback={this.addMoveSongTransaction} />
+                    moveSongCallback={this.addMoveSongTransaction}
+                    deleteSongCallback = {this.setDeleteSongIndex} />
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteListModal
                     listKeyPair={this.state.listKeyPairMarkedForDeletion}
                     hideDeleteListModalCallback={this.hideDeleteListModal}
                     deleteListCallback={this.deleteMarkedList}
+                />
+                <DeleteSongModal
+                    deleteIndex = {this.state.deleteIndex}
+                    title = {this.state.currentList !== null && this.state.deleteIndex !== null && this.state.deleteIndex !== undefined? this.state.currentList.songs[this.state.deleteIndex].title : ""}
+                    deleteSongCallback= {this.addDeleteSongTransaction}
+                    hideDeleteSongModal= {this.hideDeleteSongModal}
                 />
             </div>
         );
