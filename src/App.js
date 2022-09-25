@@ -7,9 +7,11 @@ import jsTPS from './common/jsTPS.js';
 
 // OUR TRANSACTIONS
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
+import DeleteSong_Transaction from './transactions/DeleteSong_Transaction.js';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
+import DeleteSongModal from './components/DeleteSongModal.js';
 
 // THESE REACT COMPONENTS ARE IN OUR UI
 import Banner from './components/Banner.js';
@@ -18,7 +20,6 @@ import PlaylistCards from './components/PlaylistCards.js';
 import SidebarHeading from './components/SidebarHeading.js';
 import SidebarList from './components/SidebarList.js';
 import Statusbar from './components/Statusbar.js';
-import DeleteSongModal from './components/DeleteSongModal';
 
 class App extends React.Component {
     constructor(props) {
@@ -270,7 +271,9 @@ class App extends React.Component {
         this.setState(prevState => ({
             ...prevState,
             deleteIndex: index
-        }))
+        }), () => {
+            this.showDeleteSongModal()
+        })
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
@@ -283,6 +286,17 @@ class App extends React.Component {
         let modal = document.getElementById("delete-list-modal");
         modal.classList.remove("is-visible");
     }
+
+    showDeleteSongModal(){
+        let modal = document.getElementById("delete-song-modal")
+        modal.classList.add("is-visible")
+    }
+
+    hideDeleteSongModal() {
+        let modal = document.getElementById("delete-song-modal");
+        modal.classList.remove("is-visible");
+    }
+
     render() {
         let canAddSong = this.state.currentList !== null;
         let canUndo = this.tps.hasTransactionToUndo();
@@ -324,8 +338,8 @@ class App extends React.Component {
                 <DeleteSongModal
                     deleteIndex = {this.state.deleteIndex}
                     title = {this.state.currentList !== null && this.state.deleteIndex !== null && this.state.deleteIndex !== undefined? this.state.currentList.songs[this.state.deleteIndex].title : ""}
-                    deleteSongCallback= {this.addDeleteSongTransaction}
-                    hideDeleteSongModal= {this.hideDeleteSongModal}
+                    deleteSongCallback = {this.addDeleteSongTransaction}
+                    hideDeleteSongModalCallback = {this.hideDeleteSongModal}
                 />
             </div>
         );
