@@ -61,6 +61,7 @@ export default class SongCard extends React.Component {
             isHover: true 
         }));
     }
+
     handleMouseLeave = (event) => {
         event.preventDefault();
         this.setState(prevState => ({
@@ -68,10 +69,16 @@ export default class SongCard extends React.Component {
             isHover: false
         }));
     }
+
     handleDeleteSong = (event) => {
         event.stopPropagation();
         //console.log(this.props.deleteSongCallback)
         this.props.deleteSongCallback(this.getItemNum() - 1);
+    }
+
+    handleEditSong = (event) => {
+        event.stopPropagation();
+        this.props.editSongCallback(this.getItemNum() - 1);
     }
 
     getItemNum = () => {
@@ -101,6 +108,7 @@ export default class SongCard extends React.Component {
                 onDrop={this.handleDrop}
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
+                onDoubleClick = {this.handleEditSong}
                 draggable="true"
             >
                 {num}. <a href = {link}>{song.title} by {song.artist}</a>

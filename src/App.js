@@ -8,10 +8,12 @@ import jsTPS from './common/jsTPS.js';
 // OUR TRANSACTIONS
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
 import DeleteSong_Transaction from './transactions/DeleteSong_Transaction.js';
+import EditSong_Transaction from './transactions/EditSong_Transaction.js';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
 import DeleteSongModal from './components/DeleteSongModal.js';
+import EditSongModal from './components/EditSongModal.js';
 
 // THESE REACT COMPONENTS ARE IN OUR UI
 import Banner from './components/Banner.js';
@@ -290,7 +292,7 @@ class App extends React.Component {
 
     showDeleteSongModal(){
         let modal = document.getElementById("delete-song-modal")
-        modal.classList.add("is-visible")
+        modal.classList.add("is-visible");
     }
 
     hideDeleteSongModal() {
@@ -301,6 +303,52 @@ class App extends React.Component {
     addDeleteSongTransaction = () => {
         let transaction = new DeleteSong_Transaction(this, this.state.deleteIndex, this.state.deleteSong);
         this.tps.addTransaction(transaction);
+    }
+
+    showEditSongModal(){
+        let modal = document.getElementById("edit-song-modal");
+        modal.classList.add("is-visible");
+    }
+
+    hideEditSongModal(){
+        let modal = document.getElementById("edit-song-modal");
+        modal.classList.remove("is-visible");
+    }
+
+    markSongForEdit = (index) => {
+        let song = this.state.currentList.songs[index];
+        let inputTitle = document.getElementById("input-title");
+        let inputArtist = document.getElementById("input-artist");
+        let inputID = document.getElementById("input-id");
+        inputTitle.value = song.title;
+        inputArtist.value = song.artist;
+        inputID.value = song.youTubeId;
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            oldTitle: song.title,
+            oldArtist: song.artist,
+            oldID: song.youTubeId,
+            oldIndex: index,
+            sessionData: prevState.sessionData
+        }))
+        this.showEditSongModal();
+    }
+
+    addEditSongTransaction = () => {
+        let newTitle = document.getElementById("input-title").value;
+        let newArtist = document.getElementById("input-artist").value;
+        let newID = document.getElementById("input-id").value;
+        let transaction = new EditSong_Transaction(this, this.state.oldIndex, this.state.oldTitle, this.state.oldArtist, this.state.oldID, newTitle, newArtist, newID);
+        this.tps.addTransaction(transaction);
+        this.hideEditSongModal()
+    }
+
+    editSong = (index, title, artist, ID) => {
+        let newList = this.state.currentList;
+        newList.songs[index].title = title;
+        newList.songs[index].artist = artist;
+        newList.songs[index].youTubeId = ID;
+        this.setStateWithUpdatedList(newList);
     }
 
     deleteSong = (index) =>{ 
@@ -341,7 +389,9 @@ class App extends React.Component {
                 <PlaylistCards
                     currentList={this.state.currentList}
                     moveSongCallback={this.addMoveSongTransaction}
-                    deleteSongCallback = {this.setDeleteSongIndex} />
+                    deleteSongCallback = {this.setDeleteSongIndex}
+                    editSongCallback = {this.markSongForEdit}
+                />
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteListModal
@@ -350,11 +400,16 @@ class App extends React.Component {
                     deleteListCallback={this.deleteMarkedList}
                 />
                 <DeleteSongModal
-                    deleteIndex = {this.state.deleteIndex}
+                    //deleteIndex = {this.state.deleteIndex}
                     song = {this.state.deleteSong}
-                    // title = {this.state.currentList !== null && this.state.deleteIndex !== null && this.state.deleteIndex !== undefined? this.state.currentList.songs[this.state.deleteIndex].title : ""}
+                    //title = {this.state.currentList !== null && this.state.deleteIndex !== null && this.state.deleteIndex !== undefined? this.state.currentList.songs[this.state.deleteIndex].title : ""}
                     deleteSongCallback = {this.addDeleteSongTransaction}
                     hideDeleteSongModalCallback = {this.hideDeleteSongModal}
+                />
+                <EditSongModal
+                    hideEditSongModalCallback = {this.hideEditSongModal}
+                    editSongCallback = {this.addEditSongTransaction}
+                    //index = {this.state.oldIndex}
                 />
             </div>
         );
