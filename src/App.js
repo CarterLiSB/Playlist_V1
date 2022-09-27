@@ -39,7 +39,6 @@ class App extends React.Component {
             listKeyPairMarkedForDeletion : null,
             currentList : null,
             sessionData : loadedSessionData,
-            deleteIndex: null,
 
         }
     }
@@ -268,11 +267,13 @@ class App extends React.Component {
         });
     }
     setDeleteSongIndex = (index) => {
+        let song = this.state.currentList.songs[index];
         this.setState(prevState => ({
             ...prevState,
-            deleteIndex: index
+            deleteIndex: index,
+            deleteSong: song
         }), () => {
-            this.showDeleteSongModal()
+            this.showDeleteSongModal();
         })
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
@@ -295,6 +296,19 @@ class App extends React.Component {
     hideDeleteSongModal() {
         let modal = document.getElementById("delete-song-modal");
         modal.classList.remove("is-visible");
+    }
+
+    addDeleteSongTransaction = () => {
+        let transaction = new DeleteSong_Transaction(this, this.state.deleteIndex, this.state.deleteSong);
+        this.tps.addTransaction(transaction);
+    }
+
+    deleteSong = (index) =>{ 
+        console.log(index);
+        let list = this.state.currentList;
+        list.songs.splice(index, 1);
+        this.setStateWithUpdatedList(list);
+        this.hideDeleteSongModal();
     }
 
     render() {
@@ -337,7 +351,8 @@ class App extends React.Component {
                 />
                 <DeleteSongModal
                     deleteIndex = {this.state.deleteIndex}
-                    title = {this.state.currentList !== null && this.state.deleteIndex !== null && this.state.deleteIndex !== undefined? this.state.currentList.songs[this.state.deleteIndex].title : ""}
+                    song = {this.state.deleteSong}
+                    // title = {this.state.currentList !== null && this.state.deleteIndex !== null && this.state.deleteIndex !== undefined? this.state.currentList.songs[this.state.deleteIndex].title : ""}
                     deleteSongCallback = {this.addDeleteSongTransaction}
                     hideDeleteSongModalCallback = {this.hideDeleteSongModal}
                 />

@@ -17,12 +17,12 @@ export default class DeleteSong_Transaction extends jsTPS_Transaction {
     }
 
     doTransaction() {
-        this.app.removeSong(this.index);
+        this.app.deleteSong(this.index);
     }
     
     undoTransaction() {
-        this.app.currentList.songs.splice(this.index, 0, this.song);
-        this.app.saveLists();
-        this.app.view.refreshPlaylist(this.app.currentList);
+        let list = this.app.state.currentList;
+        list.songs.splice(this.index, 0, this.song);
+        this.app.setStateWithUpdatedList(list);
     }
 }

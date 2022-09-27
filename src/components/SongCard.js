@@ -81,7 +81,7 @@ export default class SongCard extends React.Component {
     render() {
         const { song } = this.props;
         let num = this.getItemNum();
-        console.log("num: " + num);
+        // console.log("num: " + num);
         let itemClass = "playlister-song";
         if (this.state.draggedTo) {
             itemClass = "playlister-song-dragged-to";
@@ -89,7 +89,7 @@ export default class SongCard extends React.Component {
         if (this.state.isHover) {
             itemClass += " unselected-list-card";
         }
-        let link = "https://www.youtube.com/watch?v=" + song.youTubeId
+        let link = "https://www.youtube.com/watch?v=" + song.youTubeId;
         return (
             <div
                 id={'song-' + num}
