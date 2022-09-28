@@ -22,6 +22,7 @@ import PlaylistCards from './components/PlaylistCards.js';
 import SidebarHeading from './components/SidebarHeading.js';
 import SidebarList from './components/SidebarList.js';
 import Statusbar from './components/Statusbar.js';
+import AddSong_Transaction from './transactions/AddSong_Transaction';
 
 class App extends React.Component {
     constructor(props) {
@@ -197,6 +198,7 @@ class App extends React.Component {
             this.tps.clearAllTransactions();
         });
     }
+
     setStateWithUpdatedList(list) {
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
@@ -351,12 +353,28 @@ class App extends React.Component {
         this.setStateWithUpdatedList(newList);
     }
 
-    deleteSong = (index) =>{ 
-        console.log(index);
+    deleteSong = (index) => { 
+        //console.log(index);
         let list = this.state.currentList;
         list.songs.splice(index, 1);
         this.setStateWithUpdatedList(list);
         this.hideDeleteSongModal();
+    }
+
+    addAddSongTransaction = () => {
+        let transaction = new AddSong_Transaction(this);
+        this.tps.addTransaction(transaction);
+    }
+
+    addSong = () => {
+        let newList = this.state.currentList;
+        const newSong = {
+            title: "Untitled",
+            artist: "Unknown",
+            youTubeId: "dQw4w9WgXcQ"
+        }
+        newList.songs.push(newSong);
+        this.setStateWithUpdatedList(newList);
     }
 
     render() {
@@ -385,6 +403,7 @@ class App extends React.Component {
                     undoCallback={this.undo}
                     redoCallback={this.redo}
                     closeCallback={this.closeCurrentList}
+                    addSongCallback = {this.addAddSongTransaction}
                 />
                 <PlaylistCards
                     currentList={this.state.currentList}
@@ -400,16 +419,13 @@ class App extends React.Component {
                     deleteListCallback={this.deleteMarkedList}
                 />
                 <DeleteSongModal
-                    //deleteIndex = {this.state.deleteIndex}
                     song = {this.state.deleteSong}
-                    //title = {this.state.currentList !== null && this.state.deleteIndex !== null && this.state.deleteIndex !== undefined? this.state.currentList.songs[this.state.deleteIndex].title : ""}
                     deleteSongCallback = {this.addDeleteSongTransaction}
                     hideDeleteSongModalCallback = {this.hideDeleteSongModal}
                 />
                 <EditSongModal
                     hideEditSongModalCallback = {this.hideEditSongModal}
                     editSongCallback = {this.addEditSongTransaction}
-                    //index = {this.state.oldIndex}
                 />
             </div>
         );
