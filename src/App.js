@@ -42,6 +42,8 @@ class App extends React.Component {
             listKeyPairMarkedForDeletion : null,
             currentList : null,
             sessionData : loadedSessionData,
+            markSongForEdit: null,
+            setDeleteSongIndex: null
 
         }
     }
@@ -208,6 +210,7 @@ class App extends React.Component {
             // UPDATING THE LIST IN PERMANENT STORAGE
             // IS AN AFTER EFFECT
             this.db.mutationUpdateList(this.state.currentList);
+            //console.log(list);
         });
     }
     getPlaylistSize = () => {
@@ -377,16 +380,42 @@ class App extends React.Component {
         this.setStateWithUpdatedList(newList);
     }
 
+    handleKeyPress = (event) => {
+        if (event.ctrlKey && event.key === 'z') {
+            this.undo();
+        }
+        if (event.ctrlKey && event.key === 'y') {
+            this.redo();
+        }
+    }
+
     render() {
         let canAddSong = this.state.currentList !== null;
         let canUndo = this.tps.hasTransactionToUndo();
         let canRedo = this.tps.hasTransactionToRedo();
         let canClose = this.state.currentList !== null;
+        let canAddList = this.state.currentList === null;
+
+        if(this.state.markSongForEdit !== null || this.state.setDeleteSongIndex !== null || canAddList){
+            console.log("here")
+            canAddSong = false;
+            canUndo = false;
+            canRedo = false;
+            canClose = false;
+        }
+
+        // console.log(canAddSong)
+        // console.log(canUndo)
+        // console.log(canRedo)
+        // console.log(canClose)
+        console.log(canAddList)
+
         return (
-            <div id="root">
+            <div id="root" onKeyDown = {this.handleKeyPress} tabIndex = {0}>
                 <Banner />
                 <SidebarHeading
                     createNewListCallback={this.createNewList}
+                    canAddList={canAddList}
                 />
                 <SidebarList
                     currentList={this.state.currentList}

@@ -11,7 +11,8 @@ export default class SidebarHeading extends React.Component {
                 <input 
                     type="button" 
                     id="add-list-button" 
-                    className="toolbar-button" 
+                    className="toolbar-button"
+                    disabled={!this.props.canAddList}
                     onClick={this.handleClick}
                     value="+" />
                 Your Playlists

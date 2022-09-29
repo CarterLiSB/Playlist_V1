@@ -164,6 +164,7 @@ body {
 
 input {
   font-size:30pt;
+  float: right;
 }
 
 
@@ -189,6 +190,9 @@ input {
 .modal.is-visible {
   visibility: visible;
   opacity: 1;
+}
+.toolbar-button:disabled{
+  opacity: 50%
 }
 
 .modal-root {
@@ -222,7 +226,7 @@ input {
   grid-template-columns: 30% 65%;
   grid-template-rows: 33% 33% 33%;
   gap: 10px 20px;
-  font-size: 48pt;
+  font-size: 40pt;
 }
 
 span {

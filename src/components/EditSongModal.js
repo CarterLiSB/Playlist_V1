@@ -5,29 +5,29 @@ export default class EditSongModal extends Component {
         const {editSongCallback, hideEditSongModalCallback } = this.props;
         return (
             <div 
-                class="modal" 
+                className="modal" 
                 id="edit-song-modal" 
                 data-animation="slideInOutLeft">
-                    <div class="modal-root" id='verify-edit-song-root'>
-                        <div class="modal-north">
+                    <div className="modal-root" id='verify-edit-song-root'>
+                        <div className="modal-north">
                             Edit Song
                         </div>
-                        <div class="modal-center">
-                            <div class="modal-center-content">
+                        <div className="modal-center">
+                            <div className="modal-center-content">
                             <div>Title: <input type = "text" id = "input-title"></input></div>
                             <div>Artist: <input type = "text" id = "input-artist"></input></div>
-                            <div>YouTube ID: <input type = "text" id = "input-id"></input></div>
+                            <div>Youtube ID: <input type = "text" id = "input-id"></input></div>
                             </div>
                         </div>
-                        <div class="modal-south">
+                        <div className="modal-south">
                             <input type="button" 
                                 id="edit-song-confirm-button" 
-                                class="modal-button" 
+                                className="modal-button" 
                                 onClick={editSongCallback}
                                 value='Confirm' />
                             <input type="button" 
                                 id="edit-song-cancel-button" 
-                                class="modal-button" 
+                                className="modal-button" 
                                 onClick={hideEditSongModalCallback}
                                 value='Cancel' />
                         </div>
